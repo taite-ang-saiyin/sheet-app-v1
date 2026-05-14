@@ -32,5 +32,5 @@ def calculate_summary(transactions: Iterable[dict], recent_limit: int = 5) -> di
         "total_kpay": total_kpay.quantize(Decimal("1")),
         "total_kmbank": total_kmbank.quantize(Decimal("1")),
         "count": len(rows),
-        "recent_transactions": rows[:recent_limit],
+        "recent_transactions": rows[-recent_limit:],
     }

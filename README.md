@@ -30,6 +30,8 @@ supabase/migrations/002_round_amounts_to_whole_kyat.sql
 
 Amounts are stored as whole kyat. For example, `99999.98` is rounded and saved as `100000`.
 
+Records are shown from top to bottom: older rows first, newest rows at the bottom.
+
 The app uses the Supabase service role key only in the backend. Never put it in Vercel, Netlify, or any frontend environment variable.
 
 ## 2. Configure Environment Variables

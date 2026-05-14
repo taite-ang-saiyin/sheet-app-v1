@@ -69,8 +69,8 @@ def list_transactions(
 
     try:
         response = (
-            query.order("transaction_date", desc=True)
-            .order("created_at", desc=True)
+            query.order("transaction_date", desc=False)
+            .order("created_at", desc=False)
             .execute()
         )
     except APIError as error:
