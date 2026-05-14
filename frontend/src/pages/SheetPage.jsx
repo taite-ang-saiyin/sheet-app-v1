@@ -8,6 +8,7 @@ import {
   formatMethod,
   formatMoney,
 } from "../utils/format.js";
+import { createTransactionExportImage } from "../utils/exportImage.js";
 
 const columns = [
   { letter: "A", label: "ရက်စွဲ", key: "transaction_date" },
@@ -23,6 +24,8 @@ export default function SheetPage() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [exporting, setExporting] = useState(false);
+  const [exportUrl, setExportUrl] = useState("");
 
   async function loadSheet() {
     setLoading(true);
@@ -64,6 +67,30 @@ export default function SheetPage() {
     );
   }, [filteredRows]);
 
+  async function handleExportImage() {
+    setExporting(true);
+    setError("");
+    try {
+      if (exportUrl) {
+        URL.revokeObjectURL(exportUrl);
+      }
+      const blob = await createTransactionExportImage(transactions);
+      const nextUrl = URL.createObjectURL(blob);
+      setExportUrl(nextUrl);
+
+      const link = document.createElement("a");
+      link.href = nextUrl;
+      link.download = `money-sheet-${new Date().toISOString().slice(0, 10)}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err) {
+      setError(err.message || "ပုံထုတ်၍မရပါ။");
+    } finally {
+      setExporting(false);
+    }
+  }
+
   return (
     <section className="page">
       <header className="page-header">
@@ -82,7 +109,21 @@ export default function SheetPage() {
         <button type="button" className="small-button" onClick={loadSheet}>
           ပြန်ဖတ်မည်
         </button>
+        <button
+          type="button"
+          className="small-button small-button--accent"
+          onClick={handleExportImage}
+          disabled={exporting || loading}
+        >
+          {exporting ? "ပုံထုတ်နေသည်..." : "ပုံထုတ်မည်"}
+        </button>
       </div>
+
+      {exportUrl ? (
+        <a className="export-link" href={exportUrl} target="_blank" rel="noreferrer">
+          ထုတ်ထားသောပုံကို ဖွင့်ကြည့်ရန်
+        </a>
+      ) : null}
 
       <ErrorMessage message={error} />
 

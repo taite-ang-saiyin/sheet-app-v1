@@ -315,6 +315,16 @@ button {
   color: #9c2c20;
 }
 
+.small-button--accent {
+  background: #1f6b50;
+  color: #ffffff;
+}
+
+.small-button:disabled {
+  cursor: default;
+  opacity: 0.68;
+}
+
 .table-wrap {
   display: none;
   overflow-x: auto;
@@ -394,6 +404,17 @@ th {
   display: grid;
   grid-template-columns: 1fr;
   gap: 10px;
+}
+
+.export-link {
+  display: block;
+  border-radius: 8px;
+  background: #e1f0e7;
+  color: #135437;
+  padding: 12px 14px;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
 }
 
 .sheet-card {
@@ -527,7 +548,7 @@ th {
   }
 
   .sheet-toolbar {
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr auto auto;
     align-items: center;
   }
 
