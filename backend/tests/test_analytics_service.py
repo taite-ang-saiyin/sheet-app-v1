@@ -12,11 +12,11 @@ def test_calculate_summary_totals_by_direction_and_payment_method():
 
     summary = calculate_summary(rows)
 
-    assert summary["total_in"] == Decimal("1200.50")
-    assert summary["total_out"] == Decimal("300.00")
-    assert summary["net_total"] == Decimal("900.50")
-    assert summary["total_kpay"] == Decimal("1300.00")
-    assert summary["total_kmbank"] == Decimal("200.50")
+    assert summary["total_in"] == Decimal("1201")
+    assert summary["total_out"] == Decimal("300")
+    assert summary["net_total"] == Decimal("901")
+    assert summary["total_kpay"] == Decimal("1300")
+    assert summary["total_kmbank"] == Decimal("201")
     assert summary["count"] == 3
 
 

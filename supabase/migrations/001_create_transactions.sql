@@ -3,7 +3,7 @@ create extension if not exists pgcrypto;
 create table if not exists public.transactions (
   id uuid primary key default gen_random_uuid(),
   person_name text not null,
-  amount numeric(12, 2) not null check (amount > 0),
+  amount numeric(12, 0) not null check (amount > 0),
   transaction_date date not null,
   direction text not null check (direction in ('in', 'out')),
   payment_method text not null check (payment_method in ('kpay', 'kmbank')),

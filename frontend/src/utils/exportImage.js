@@ -20,7 +20,7 @@ const columns = [
 function money(value) {
   return new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
+    maximumFractionDigits: 0,
   }).format(Number(value || 0));
 }
 

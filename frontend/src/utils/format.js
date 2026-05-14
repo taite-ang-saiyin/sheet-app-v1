@@ -3,7 +3,7 @@ export function formatMoney(value) {
   try {
     return `${new Intl.NumberFormat("en-US", {
       minimumFractionDigits: 0,
-      maximumFractionDigits: 2,
+      maximumFractionDigits: 0,
     }).format(amount)} ကျပ်`;
   } catch {
     return `${amount.toFixed(0)} ကျပ်`;

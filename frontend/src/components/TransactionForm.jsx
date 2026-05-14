@@ -63,7 +63,7 @@ export default function TransactionForm({
       const payload = {
         ...form,
         person_name: form.person_name.trim(),
-        amount: Number(form.amount).toFixed(2),
+        amount: String(Math.round(Number(form.amount))),
       };
       const saved = isEditing
         ? await updateTransaction(initialValues.id, payload)
@@ -102,8 +102,8 @@ export default function TransactionForm({
           className="input"
           type="number"
           min="1"
-          step="0.01"
-          inputMode="decimal"
+          step="1"
+          inputMode="numeric"
           value={form.amount}
           onChange={(event) => setField("amount", event.target.value)}
           placeholder="ဥပမာ - 50000"

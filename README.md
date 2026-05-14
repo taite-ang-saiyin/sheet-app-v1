@@ -22,6 +22,14 @@ supabase/   SQL migration
 3. Paste and run `supabase/migrations/001_create_transactions.sql`.
 4. Confirm the `transactions` table exists.
 
+If you already created the table before whole-kyat rounding was added, also run:
+
+```text
+supabase/migrations/002_round_amounts_to_whole_kyat.sql
+```
+
+Amounts are stored as whole kyat. For example, `99999.98` is rounded and saved as `100000`.
+
 The app uses the Supabase service role key only in the backend. Never put it in Vercel, Netlify, or any frontend environment variable.
 
 ## 2. Configure Environment Variables

@@ -1,9 +1,9 @@
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 from typing import Iterable
 
 
 def _money(value) -> Decimal:
-    return Decimal(str(value or "0")).quantize(Decimal("0.01"))
+    return Decimal(str(value or "0")).quantize(Decimal("1"), rounding=ROUND_HALF_UP)
 
 
 def calculate_summary(transactions: Iterable[dict], recent_limit: int = 5) -> dict:
@@ -26,11 +26,11 @@ def calculate_summary(transactions: Iterable[dict], recent_limit: int = 5) -> di
             total_kmbank += amount
 
     return {
-        "total_in": total_in.quantize(Decimal("0.01")),
-        "total_out": total_out.quantize(Decimal("0.01")),
-        "net_total": (total_in - total_out).quantize(Decimal("0.01")),
-        "total_kpay": total_kpay.quantize(Decimal("0.01")),
-        "total_kmbank": total_kmbank.quantize(Decimal("0.01")),
+        "total_in": total_in.quantize(Decimal("1")),
+        "total_out": total_out.quantize(Decimal("1")),
+        "net_total": (total_in - total_out).quantize(Decimal("1")),
+        "total_kpay": total_kpay.quantize(Decimal("1")),
+        "total_kmbank": total_kmbank.quantize(Decimal("1")),
         "count": len(rows),
         "recent_transactions": rows[:recent_limit],
     }
