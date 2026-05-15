@@ -1,5 +1,3 @@
-import { formatDate } from "./format.js";
-
 const page = {
   width: 1080,
   margin: 70,
@@ -16,6 +14,19 @@ const columns = [
   { label: "လက်ခံသူ / ပေးသူ အမည်", width: 560, align: "left" },
   { label: "ငွေပမာဏ", width: 190, align: "right" },
 ];
+
+const myanmarDigits = ["၀", "၁", "၂", "၃", "၄", "၅", "၆", "၇", "၈", "၉"];
+
+function toMyanmarNumber(value) {
+  return String(value).replace(/\d/g, (digit) => myanmarDigits[Number(digit)]);
+}
+
+function formatExportDate(value) {
+  if (!value) return "-";
+  const [year, month, day] = String(value).split("-");
+  if (!year || !month || !day) return value;
+  return toMyanmarNumber(`${Number(day)}-${Number(month)}-${year}`);
+}
 
 function money(value) {
   return new Intl.NumberFormat("en-US", {
@@ -103,7 +114,7 @@ function drawTable(ctx, title, rows, total, startY) {
   const visibleRows = rows.length ? rows : [{ transaction_date: "", person_name: "-", amount: "" }];
   visibleRows.forEach((row) => {
     currentX = x;
-    const values = [formatDate(row.transaction_date), row.person_name, row.amount ? money(row.amount) : ""];
+    const values = [formatExportDate(row.transaction_date), row.person_name, row.amount ? money(row.amount) : ""];
     columns.forEach((column, index) => {
       strokeRect(ctx, currentX, y, column.width, page.rowHeight);
       drawCellText(ctx, values[index], currentX, y, column.width, page.rowHeight, column.align);
