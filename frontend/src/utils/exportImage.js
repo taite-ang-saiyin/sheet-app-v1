@@ -9,11 +9,14 @@ const page = {
   mutedFill: "#f5f5f5",
 };
 
-const columns = [
-  { label: "ရက်စွဲ", width: 190, align: "left" },
-  { label: "လက်ခံသူ / ပေးသူ အမည်", width: 560, align: "left" },
-  { label: "ငွေပမာဏ", width: 190, align: "right" },
-];
+function getColumns(nameColumnLabel) {
+  return [
+    { label: "ရက်စွဲ", width: 170, align: "left" },
+    { label: nameColumnLabel, width: 430, align: "left" },
+    { label: "Kpay/mBanking", width: 170, align: "center" },
+    { label: "ငွေပမာဏ", width: 170, align: "right" },
+  ];
+}
 
 const myanmarDigits = ["၀", "၁", "၂", "၃", "၄", "၅", "၆", "၇", "၈", "၉"];
 
@@ -33,6 +36,12 @@ function money(value) {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(Number(value || 0));
+}
+
+function paymentMethod(value) {
+  if (value === "kpay") return "KPay";
+  if (value === "kmbank") return "mBanking";
+  return "-";
 }
 
 function splitRows(transactions) {
@@ -90,7 +99,8 @@ function fillRect(ctx, x, y, width, height, fill) {
   ctx.fillRect(x, y, width, height);
 }
 
-function drawTable(ctx, title, rows, total, startY) {
+function drawTable(ctx, title, rows, total, startY, nameColumnLabel) {
+  const columns = getColumns(nameColumnLabel);
   const x = page.margin;
   const tableWidth = columns.reduce((sum, column) => sum + column.width, 0);
   let y = startY;
@@ -111,10 +121,17 @@ function drawTable(ctx, title, rows, total, startY) {
   });
   y += page.rowHeight;
 
-  const visibleRows = rows.length ? rows : [{ transaction_date: "", person_name: "-", amount: "" }];
+  const visibleRows = rows.length
+    ? rows
+    : [{ transaction_date: "", person_name: "-", payment_method: "", amount: "" }];
   visibleRows.forEach((row) => {
     currentX = x;
-    const values = [formatExportDate(row.transaction_date), row.person_name, row.amount ? money(row.amount) : ""];
+    const values = [
+      formatExportDate(row.transaction_date),
+      row.person_name,
+      paymentMethod(row.payment_method),
+      row.amount ? money(row.amount) : "",
+    ];
     columns.forEach((column, index) => {
       strokeRect(ctx, currentX, y, column.width, page.rowHeight);
       drawCellText(ctx, values[index], currentX, y, column.width, page.rowHeight, column.align);
@@ -127,11 +144,12 @@ function drawTable(ctx, title, rows, total, startY) {
   fillRect(ctx, x, y, tableWidth, page.rowHeight, "#fbfbfb");
   strokeRect(ctx, currentX, y, columns[0].width, page.rowHeight);
   currentX += columns[0].width;
-  strokeRect(ctx, currentX, y, columns[1].width, page.rowHeight);
-  drawCellText(ctx, "စုစုပေါင်း", currentX, y, columns[1].width, page.rowHeight, "center", true);
-  currentX += columns[1].width;
-  strokeRect(ctx, currentX, y, columns[2].width, page.rowHeight);
-  drawCellText(ctx, money(total), currentX, y, columns[2].width, page.rowHeight, "right", true);
+  const totalLabelWidth = columns[1].width + columns[2].width;
+  strokeRect(ctx, currentX, y, totalLabelWidth, page.rowHeight);
+  drawCellText(ctx, "စုစုပေါင်း", currentX, y, totalLabelWidth, page.rowHeight, "center", true);
+  currentX += totalLabelWidth;
+  strokeRect(ctx, currentX, y, columns[3].width, page.rowHeight);
+  drawCellText(ctx, money(total), currentX, y, columns[3].width, page.rowHeight, "right", true);
 
   return y + page.rowHeight;
 }
@@ -187,8 +205,8 @@ export function createTransactionExportImage(transactions) {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   let y = page.margin;
-  y = drawTable(ctx, "ဝင်ငွေစာရင်း", inRows, totalIn, y) + page.gap;
-  y = drawTable(ctx, "ထွက်ငွေစာရင်း", outRows, totalOut, y) + page.gap;
+  y = drawTable(ctx, "ဝင်ငွေစာရင်း", inRows, totalIn, y, "ငွေလွှဲသူအမည်") + page.gap;
+  y = drawTable(ctx, "ထွက်ငွေစာရင်း", outRows, totalOut, y, "ငွေလက်ခံသူအမည်") + page.gap;
   drawSummaryTable(ctx, totalIn, totalOut, y);
 
   return new Promise((resolve) => {
