@@ -12,8 +12,8 @@ const page = {
 function getColumns(nameColumnLabel) {
   return [
     { label: "ရက်စွဲ", width: 170, align: "left" },
-    { label: nameColumnLabel, width: 430, align: "left" },
-    { label: "Kpay/mBanking", width: 170, align: "center" },
+    { label: nameColumnLabel, width: 370, align: "left" },
+    { label: "Kpay/mBanking", width: 230, align: "center" },
     { label: "ငွေပမာဏ", width: 170, align: "right" },
   ];
 }
