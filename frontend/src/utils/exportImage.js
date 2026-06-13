@@ -11,10 +11,9 @@ const page = {
 
 function getColumns(nameColumnLabel) {
   return [
-    { label: "ရက်စွဲ", width: 170, align: "left" },
-    { label: nameColumnLabel, width: 370, align: "left" },
-    { label: "Kpay/mBanking", width: 230, align: "center" },
-    { label: "ငွေပမာဏ", width: 170, align: "right" },
+    { label: "ရက်စွဲ", width: 190, align: "left" },
+    { label: nameColumnLabel, width: 560, align: "left" },
+    { label: "ငွေပမာဏ", width: 190, align: "right" },
   ];
 }
 
@@ -36,12 +35,6 @@ function money(value) {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(Number(value || 0));
-}
-
-function paymentMethod(value) {
-  if (value === "kpay") return "KPay";
-  if (value === "kmbank") return "mBanking";
-  return "-";
 }
 
 function splitRows(transactions) {
@@ -123,13 +116,12 @@ function drawTable(ctx, title, rows, total, startY, nameColumnLabel) {
 
   const visibleRows = rows.length
     ? rows
-    : [{ transaction_date: "", person_name: "-", payment_method: "", amount: "" }];
+    : [{ transaction_date: "", person_name: "-", amount: "" }];
   visibleRows.forEach((row) => {
     currentX = x;
     const values = [
       formatExportDate(row.transaction_date),
       row.person_name,
-      paymentMethod(row.payment_method),
       row.amount ? money(row.amount) : "",
     ];
     columns.forEach((column, index) => {
@@ -144,12 +136,11 @@ function drawTable(ctx, title, rows, total, startY, nameColumnLabel) {
   fillRect(ctx, x, y, tableWidth, page.rowHeight, "#fbfbfb");
   strokeRect(ctx, currentX, y, columns[0].width, page.rowHeight);
   currentX += columns[0].width;
-  const totalLabelWidth = columns[1].width + columns[2].width;
-  strokeRect(ctx, currentX, y, totalLabelWidth, page.rowHeight);
-  drawCellText(ctx, "စုစုပေါင်း", currentX, y, totalLabelWidth, page.rowHeight, "center", true);
-  currentX += totalLabelWidth;
-  strokeRect(ctx, currentX, y, columns[3].width, page.rowHeight);
-  drawCellText(ctx, money(total), currentX, y, columns[3].width, page.rowHeight, "right", true);
+  strokeRect(ctx, currentX, y, columns[1].width, page.rowHeight);
+  drawCellText(ctx, "စုစုပေါင်း", currentX, y, columns[1].width, page.rowHeight, "center", true);
+  currentX += columns[1].width;
+  strokeRect(ctx, currentX, y, columns[2].width, page.rowHeight);
+  drawCellText(ctx, money(total), currentX, y, columns[2].width, page.rowHeight, "right", true);
 
   return y + page.rowHeight;
 }
